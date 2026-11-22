@@ -1,0 +1,1 @@
+"""ChessMate AI application package."""
