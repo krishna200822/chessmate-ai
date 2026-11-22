@@ -21,9 +21,17 @@ export class GameWebSocket {
     if (!this.gameId) return;
 
     this.isExplicitlyClosed = false;
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const host = window.location.host;
-    const wsUrl = `${protocol}//${host}/ws/game/${this.gameId}`;
+    let wsUrl;
+    const apiUrl = import.meta.env.VITE_API_URL;
+    if (apiUrl) {
+      const parsed = new URL(apiUrl, window.location.href);
+      const wsProtocol = parsed.protocol === 'https:' ? 'wss:' : 'ws:';
+      wsUrl = `${wsProtocol}//${parsed.host}/ws/game/${this.gameId}`;
+    } else {
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const host = window.location.host;
+      wsUrl = `${protocol}//${host}/ws/game/${this.gameId}`;
+    }
 
     if (this.onStatusChange) {
       this.onStatusChange('connecting');
